@@ -6,7 +6,7 @@ O app possui duas telas, uma para cadastro e outra para listagem, sendo esta a h
 
 O projeto ainda está em desenvolvimento, sendo desenvolvido durante as aulas de Programação para Dispositivos Móveis. Você poderá acessar a aula clicando na imagem a seguir:
 
-[![Programação para Dispositivos Móveis - ao vivo - 15/04/2025 - Alex Rocha](https://img.youtube.com/vi/AUnZct2TOss/0.jpg)](https://www.youtube.com/watch?app=desktop&v=AUnZct2TOss)
+[![Programação para Dispositivos Móveis - ao vivo - 22/04/2025 - Alex Rocha](https://img.youtube.com/vi/AUnZct2TOss/0.jpg)](https://www.youtube.com/watch?app=desktop&v=AUnZct2TOss)
 
 ## Plataformas utilizadas
 
