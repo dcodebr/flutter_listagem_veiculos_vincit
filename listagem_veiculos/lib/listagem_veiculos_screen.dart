@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:listagem_veiculos/cadastro_veiculos_screen.dart';
 import 'package:listagem_veiculos/veiculo.dart';
+import 'package:listagem_veiculos/veiculo_repository.dart';
 
 class ListagemVeiculosScreen extends StatefulWidget {
   const ListagemVeiculosScreen({super.key});
@@ -10,41 +11,19 @@ class ListagemVeiculosScreen extends StatefulWidget {
 }
 
 class _ListagemVeiculosScreenState extends State<ListagemVeiculosScreen> {
-  final List<Veiculo> veiculos = [
-    Veiculo(
-        fabricante: "Volks",
-        modelo: "Gol",
-        anoFabricacao: "2022",
-        cor: "Branca",
-        placa: "ABC-1234"),
-    Veiculo(
-        fabricante: "GM",
-        modelo: "Gol",
-        anoFabricacao: "2022",
-        cor: "Branca",
-        placa: "ABC-1234"),
-    Veiculo(
-        fabricante: "Ford",
-        modelo: "Gol",
-        anoFabricacao: "2022",
-        cor: "Branca",
-        placa: "ABC-1234"),
-    Veiculo(
-        fabricante: "Fiat",
-        modelo: "Gol",
-        anoFabricacao: "2022",
-        cor: "Branca",
-        placa: "ABC-1234"),
-    Veiculo(
-        fabricante: "Suzuki",
-        modelo: "Gol",
-        anoFabricacao: "2022",
-        cor: "Branca",
-        placa: "ABC-1234"),
-  ];
+  final VeiculoRepository veiculoRepository = VeiculoRepository();
+  List<Veiculo> veiculos = [];
+
+  void listarVeiculos() {
+    veiculoRepository.listar().then((value) {
+      setState(() => veiculos = value);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    listarVeiculos();
+
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.blue,
@@ -55,15 +34,28 @@ class _ListagemVeiculosScreenState extends State<ListagemVeiculosScreen> {
             ),
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          heroTag: "listagem.add",
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => CadastroVeiculoScreen()));
-          },
-          child: const Icon(Icons.add),
+        floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FloatingActionButton(
+              heroTag: "listagem.add",
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CadastroVeiculoScreen()));
+
+                listarVeiculos();
+              },
+              child: const Icon(Icons.add),
+            ),
+            SizedBox(height: 20),
+            FloatingActionButton(
+              heroTag: "listagem.refresh",
+              onPressed: () => listarVeiculos(),
+              child: const Icon(Icons.refresh),
+            ),
+          ],
         ),
         body: ListView.builder(
             itemCount: veiculos.length,
@@ -110,9 +102,34 @@ class _ListagemVeiculosScreenState extends State<ListagemVeiculosScreen> {
                 child: FloatingActionButton(
                   heroTag: "excluir.${index}",
                   onPressed: () {
-                    setState(() {
-                      veiculos.remove(veiculo);
-                    });
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            content: Text(
+                              "Tem certeza que deseja excluir?",
+                              style: TextStyle(fontSize: 50),
+                            ),
+                            actions: [
+                              TextButton(
+                                child: Text("Não"),
+                                onPressed: () => Navigator.of(context).pop(),
+                              ),
+                              ElevatedButton(
+                                child: Text("Sim"),
+                                onPressed: () {
+                                  veiculoRepository
+                                      .excluir(veiculo.id)
+                                      .then((value) {
+                                    listarVeiculos();
+
+                                    Navigator.of(context).pop();
+                                  });
+                                },
+                              )
+                            ],
+                          );
+                        });
                   },
                   child: Icon(Icons.delete),
                 ),
