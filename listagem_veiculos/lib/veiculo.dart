@@ -1,4 +1,5 @@
 class Veiculo {
+  BigInt? id;
   String? fabricante;
   String? modelo;
   String? anoFabricacao;
